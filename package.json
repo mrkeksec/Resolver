@@ -1,0 +1,14 @@
+{
+  "name": "resolver",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "client": "cd client && npm start"
+  },
+  "author": "Nazarov Dmitry",
+  "license": "ISC",
+  "dependencies": {
+    "create-react-app": "^3.0.1"
+  }
+}

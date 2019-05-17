@@ -1,0 +1,9 @@
+export const SET_TASKS = 'SET_TASKS';
+export const SET_FETCHING_STATUS = 'SET_FETCHING_STATUS';
+export const SET_USER = 'SET_USER';
+export const SET_PAGE = 'SET_PAGE';
+export const SET_ACTIVE_BAR = 'SET_ACTIVE_BAR';
+export const SET_ERRORS = 'SET_ERRORS';
+export const CLEAR_ERRORS = 'CLEAR_ERRORS';
+export const CREATE_TASK = 'CREATE_TASK';
+export const EDIT_TASK = 'EDIT_TASK';
