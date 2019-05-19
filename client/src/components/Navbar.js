@@ -29,22 +29,23 @@ class Navbar extends Component {
     this.setState({ [e.target.name]: e.target.value })
   }
 
-  setActiveBar() {
-    if (this.props.activeBar === 'tasks') {
-      document.getElementById('login').classList.add('active');
-      document.getElementById('tasks').classList.remove('active');
-      this.props.setActiveBar('login')
-    }
-    else {
-      document.getElementById('tasks').classList.add('active');
-      document.getElementById('login').classList.remove('active');
-      this.props.setActiveBar('tasks')
+  setActiveBar(e) {
+    if (e.target.name !== this.props.activeBar) {
+      document.getElementById(this.props.activeBar).classList.remove('active');
+      document.getElementById(e.target.name).classList.add('active');
+      this.props.setActiveBar(this.props.activeBar === 'tasks' ? 'login' : 'tasks');
     }
   }
 
   onSubmit(e) {
     e.preventDefault();
-    this.props.fetchTasks({ type: 'sort_field', payload: this.state.sortby });
+    this.props.fetchTasks({
+      type: 'sort_field',
+      payload: {
+        page: this.props.page,
+        sortby: this.state.sortby
+      }
+    });
   }
 
   render() {
@@ -57,11 +58,11 @@ class Navbar extends Component {
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item" id="tasks" name="tasks" onClick={this.setActiveBar}>
-              <Link class="nav-link" to="/">Задачи</Link>
+            <li class="nav-item" id="tasks" onClick={this.setActiveBar}>
+              <Link class="nav-link" name="tasks" to="/">Задачи</Link>
             </li>
-            <li class="nav-item" id="login" name="login" onClick={this.setActiveBar}>
-              <Link class="nav-link" to="/login">Вход</Link>
+            <li class="nav-item" id="login" onClick={this.setActiveBar}>
+              <Link class="nav-link" name="login" to="/login">Вход</Link>
             </li>
           </ul>
           <form class="form-inline my-2 my-lg-0" onSubmit={this.onSubmit}>
@@ -83,7 +84,8 @@ class Navbar extends Component {
 }
 
 const mapStateToProps = state => ({
-  activeBar: state.user.activeBar
+  activeBar: state.user.activeBar,
+  page: state.data.page
 })
 
 export default connect(mapStateToProps, { fetchTasks, setActiveBar })(Navbar);

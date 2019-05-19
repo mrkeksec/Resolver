@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import { Redirect } from "react-router-dom";
 import { connect } from 'react-redux';
 import { signIn, setActiveBar } from '../actions/userActions';
+import { clearErrors, setErrors, validateUserData } from '../helpers/errorsHandlers';
 
 class Login extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      login: '',
+      username: '',
       email: '',
       password: '',
       redirect: false
@@ -39,19 +40,27 @@ class Login extends Component {
       email: '',
       password: '',
       redirect: false
-    })
+    });
+    const errorsNames = ['username', 'email', 'password'];
+    clearErrors(errorsNames);
   }
 
   onSubmit(e) {
     e.preventDefault();
-
-    const userData = {
-      username: this.state.username,
-      email: this.state.email,
-      password: this.state.password
+    const errorsNames = ['username', 'email', 'password'];
+    clearErrors(errorsNames);
+    const errors = validateUserData(this.state.username, this.state.email, this.state.password);
+    if (errors.length > 0) {
+      setErrors(errors);
     }
-
-    this.props.signIn(userData);
+    else {
+      const userData = {
+        username: this.state.username,
+        email: this.state.email,
+        password: this.state.password
+      }
+      this.props.signIn(userData);
+    }
   }
 
   render() {
@@ -59,7 +68,7 @@ class Login extends Component {
      (
       <div className = "login-form">
       <form  onSubmit={this.onSubmit}>
-      <div className="form-group mb-2">
+      <div className="form-group mb-2" id="username">
         <label for="login">Логин: </label>
         <input type="text" className="form-control user-input" name="username" placeholder="Введите логин" onChange={this.onChange} />
       </div>
@@ -67,7 +76,7 @@ class Login extends Component {
         <label for="email">Email: </label>
         <input type="email" name="email" className="form-control user-input" value={this.state.email} aria-describedby="emailHelp" placeholder="Введите email"onChange={this.onChange} />
       </div>
-      <div className="form-group">
+      <div className="form-group" id="password">
         <label for="password">Пароль: </label>
         <input type="password" className="form-control user-input" name="password" placeholder="Введите пароль" onChange={this.onChange} />
       </div>

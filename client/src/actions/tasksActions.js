@@ -8,7 +8,13 @@ export const fetchTasks = (data) => dispatch => {
     fetching: true
   });
 
-  var searchParameterStr = `${data.type}=${data.payload}`;
+  var searchParameterStr;
+  if (data.payload.sortby) {
+    searchParameterStr = `page=${data.payload.page}&${data.type}=${data.payload.sortby}`;
+  }
+  else {
+    searchParameterStr = `${data.type}=${data.payload}`;
+  }
 
   $.ajax({
     url: `https://uxcandy.com/~shapoval/test-task-backend/?developer=Nazarov&${searchParameterStr}`,
@@ -16,7 +22,6 @@ export const fetchTasks = (data) => dispatch => {
     method: 'GET',
     success: function(data) {
         if (data.status === 'ok') {
-          console.log(data.message.tasks);
           dispatch({
             type: SET_TASKS,
             data: {
@@ -80,9 +85,6 @@ export const editTask = (taskId, editedText, editedStatus) => dispatch => {
   form.append("status", editedStatus);
   form.append("token", "beejee");
   form.append("signature", md5(params_string));
-
-  console.log(params_string);
-  console.log(md5(params_string));
 
   $.ajax({
     url: `https://uxcandy.com/~shapoval/test-task-backend/edit/${taskId}?developer=Nazarov`,

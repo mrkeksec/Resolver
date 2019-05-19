@@ -11,8 +11,6 @@ constructor(props) {
 }
 
   onChangePage(page) {
-    console.log(this.props.page)
-    console.log(page);
     this.props.setPage(page)
   }
 
