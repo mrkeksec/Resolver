@@ -18,38 +18,72 @@ export const setErrors = (errors) => {
   })
 }
 
-export const validateUserData = (username, email, password) => {
+const validateElement = (type, data) => {
+  let key = type;
+  let text = '';
+  if (!data) {
+    text = 'Поле является обязательным для заполнения';
+    return { key, text }
+  }
+  switch(type) {
+    case 'username': {
+      if (data.length < 3) {
+        text = 'Минимальная длина имени пользователя - 3 символа';
+      }
+      else if (data.length > 30) {
+        text = 'Максимальная длина имени пользователя - 30 символов';
+      }
+      break;
+    }
+    case 'password': {
+      if (data.length > 100) {
+        text = 'Максимальная длина пароля - 100 символов';
+      }
+      break;
+    }
+    case 'email': {
+      if (data.length > 255) {
+        text = 'Максимальная длина поля email - 255 символов';
+      }
+      else if (!(/^[-._a-z0-9]+@(?:[a-z0-9][-a-z0-9]+\.)+[a-z]{2,6}$/).test(data)) {
+        text = 'Неверный формат';
+      }
+      break;
+    }
+    case 'task': {
+      if (data.length > 1500) {
+        text = 'Максимальная длина задачи - 1500 символов';
+      }
+      else if (data.length < 1) {
+        text = 'Минимальная длина задачи - 1 символ'
+      }
+      break;
+    }
+  }
+  return { key, text }
+}
+
+export const validateForm = (type, data) => {
   var errors = [];
-  if (username) {
-    if (username.length < 3 || username.length > 30) {
-      (username.length < 3) ?
-      errors.push({key: 'username', text: 'Минимальная длина имени пользователя - 3 символа'}) :
-      errors.push({key: 'username', text: 'Максимальная длина имени пользователя - 30 символов'})
+  if (type === 'login') {
+    errors.push(validateElement('username', data.username));
+    if (data.username !== 'admin') {
+      errors.push(validateElement('email', data.email));
     }
+    errors.push(validateElement('password', data.password));
   }
-  else {
-    errors.push({key: 'username', text: 'Минимальная длина имени пользователя - 3 символа'});
+  else if (type === 'loggedUserTask') {
+    errors.push(validateElement('task', data.task));
   }
-
-  if (password) {
-    if (password.length > 100) {
-      errors.push({key: 'password', text: 'Максимальная длина пароля - 100 символов'})
+  else if (type === 'userTask') {
+    errors.push(validateElement('username', data.username));
+    if (data.username !== 'admin') {
+      errors.push(validateElement('email', data.email));
     }
-  }
-  else {
-    errors.push({key: 'password', text: 'Минимальная длина пароля - 1 символ'})
-  }
-
-  if (email) {
-    if (email.length > 255) {
-      errors.push({key: 'email', text: 'Максимальная длина поля email - 255 символов'})
+    else {
+      errors.push({ key: 'username', text: 'Необходимо выполнить вход как администратор' });
     }
-    else if (!(/^[-._a-z0-9]+@(?:[a-z0-9][-a-z0-9]+\.)+[a-z]{2,6}$/).test(email)) {
-      errors.push({key: 'email', text: 'Неверный формат'})
-    };
+    errors.push(validateElement('task', data.task));
   }
-  else {
-    errors.push({key: 'email', text: 'Минимальная длина поля email - 5 символов'})
-  }
-  return errors;
+  return errors.filter(elem => elem.text ? true: false);
 }

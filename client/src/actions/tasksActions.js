@@ -2,6 +2,12 @@ import { SET_TASKS, SET_FETCHING_STATUS, CREATE_TASK, EDIT_TASK } from './action
 import $ from "jquery";
 import md5 from "md5";
 
+function fixedEncodeURIComponent (str) {
+  return encodeURIComponent(str).replace(/[!'()*]/g, function(c) {
+    return '%' + c.charCodeAt(0).toString(16);
+  });
+}
+
 export const fetchTasks = (data) => dispatch => {
   dispatch({
     type: SET_FETCHING_STATUS,
@@ -77,7 +83,7 @@ export const editTask = (taskId, editedText, editedStatus) => dispatch => {
       { name: 'token', payload: "beejee" }
     ]
     .sort((a, b) => a.name > b.name)
-    .map((elem) => `${encodeURIComponent(elem.name)}=${encodeURIComponent(elem.payload)}`)
+    .map((elem) => `${fixedEncodeURIComponent(elem.name)}=${fixedEncodeURIComponent(elem.payload)}`)
     .join('&');
 
   var form = new FormData();

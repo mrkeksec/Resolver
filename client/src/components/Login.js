@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Redirect } from "react-router-dom";
 import { connect } from 'react-redux';
 import { signIn, setActiveBar } from '../actions/userActions';
-import { clearErrors, setErrors, validateUserData } from '../helpers/errorsHandlers';
+import { clearErrors, setErrors, validateForm } from '../helpers/errorsHandlers';
 
 class Login extends Component {
   constructor(props) {
@@ -49,7 +49,11 @@ class Login extends Component {
     e.preventDefault();
     const errorsNames = ['username', 'email', 'password'];
     clearErrors(errorsNames);
-    const errors = validateUserData(this.state.username, this.state.email, this.state.password);
+    const errors = validateForm('login', {
+      username: this.state.username,
+      email: this.state.email.toLowerCase(),
+      password: this.state.password
+    });
     if (errors.length > 0) {
       setErrors(errors);
     }

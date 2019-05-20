@@ -8,7 +8,9 @@ class Layout extends Component {
   render() {
     return (
       <div className="layout">
-        {this.props.username ? <TaskForm /> : <></>}
+        {
+          this.props.username === 'admin' ? <></> : <TaskForm />
+        }
         <Tasks />
       </div>
     )

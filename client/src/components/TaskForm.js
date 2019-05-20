@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { createTask } from '../actions/tasksActions';
+import { clearErrors, setErrors, validateForm } from '../helpers/errorsHandlers';
 
 class TaskForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      username: '',
+      email: '',
       text: '',
       button: 'Добавить задачу'
     };
@@ -50,8 +53,36 @@ class TaskForm extends Component {
 
   onSubmit(e) {
     e.preventDefault();
-    this.props.createTask(this.props.username, this.props.email, this.state.text);
-    this.setState({text: ''});
+    const errorsNames = ['username', 'email', 'text', 'task'];
+    clearErrors(errorsNames);
+    if (this.props.username &&  this.props.email) {
+      const errors = validateForm('loggedUserTask', {
+        task: this.state.text
+      })
+
+      if (errors.length > 0) {
+        setErrors(errors);
+      }
+      else {
+        this.props.createTask(this.props.username, this.props.email, this.state.text);
+        this.setState({text: '', username: '', email: ''});
+      }
+    }
+    else {
+      const errors = validateForm('userTask', {
+        username: this.state.username,
+        email: this.state.email.toLowerCase(),
+        task: this.state.text
+      })
+
+      if (errors.length > 0) {
+        setErrors(errors);
+      }
+      else {
+        this.props.createTask(this.state.username, this.state.email, this.state.text);
+        this.setState({text: '', username: '', email: ''});
+      }
+    }
     this.onButtonChange();
   }
 
@@ -62,7 +93,21 @@ class TaskForm extends Component {
         {this.state.button}
         </button>
         <form encType="multipart/form-data" id="taskform" class="collapse" onSubmit={this.onSubmit}>
-          <div className="form-group taskform-elem">
+          {
+            (this.props.username && this.props.email) ?
+            <></> :
+            <>
+            <div className="taskform-elem" id="username">
+            <label for="username">Введите логин: </label>
+            <input type="text" name="username" class="inp-text" value={this.state.username} onChange={this.onChange} />
+            </div>
+            <div className="taskform-elem" id="email">
+            <label for="email">Введите email: </label>
+            <input type="email" name="email" class="inp-text" value={this.state.email} onChange={this.onChange} />
+            </div>
+            </>
+          }
+          <div className="taskform-elem" id="task">
           <label for="login">Напишите текст задачи: </label>
           <textarea name="text" value={this.state.text} onChange={this.onChange} />
           </div>
