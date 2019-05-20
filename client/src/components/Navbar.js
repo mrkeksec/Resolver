@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 import { connect } from 'react-redux';
-import { fetchTasks } from '../actions/tasksActions';
+import { fetchTasks, setSortby } from '../actions/tasksActions';
 import { setActiveBar } from '../actions/userActions';
 
 import logo from '../icons/logo.png';
@@ -39,6 +39,7 @@ class Navbar extends Component {
 
   onSubmit(e) {
     e.preventDefault();
+    this.props.setSortby(this.state.sortby);
     this.props.fetchTasks({
       type: 'sort_field',
       payload: {
@@ -88,4 +89,4 @@ const mapStateToProps = state => ({
   page: state.data.page
 })
 
-export default connect(mapStateToProps, { fetchTasks, setActiveBar })(Navbar);
+export default connect(mapStateToProps, { fetchTasks, setActiveBar, setSortby })(Navbar);

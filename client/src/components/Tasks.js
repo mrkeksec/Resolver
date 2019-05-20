@@ -18,7 +18,21 @@ class Tasks extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.page !== this.props.page) {
-      this.props.fetchTasks({ type: 'page', payload: nextProps.page });
+      if (this.props.sortby) {
+        this.props.fetchTasks({
+          type: 'sort_field',
+          payload: {
+            page: nextProps.page,
+            sortby: this.props.sortby
+          }
+        });
+      }
+      else {
+        this.props.fetchTasks({
+          type: 'page',
+          payload: nextProps.page
+        })
+      }
     }
   }
 
@@ -65,6 +79,7 @@ class Tasks extends Component {
 
 const mapStateToProps = state => ({
   tasks: state.data.tasks,
+  sortby: state.data.sortby,
   fetching: state.data.fetching,
   page: state.data.page
 })

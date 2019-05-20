@@ -1,4 +1,4 @@
-import { SET_TASKS, SET_FETCHING_STATUS, CREATE_TASK, EDIT_TASK } from './actionTypes';
+import { SET_TASKS, SET_FETCHING_STATUS, SET_PAGE, CREATE_TASK, EDIT_TASK, SET_SORTBY } from './actionTypes';
 import $ from "jquery";
 import md5 from "md5";
 
@@ -121,7 +121,14 @@ export const editTask = (taskId, editedText, editedStatus) => dispatch => {
 
 export const setPage = (page) => dispatch => {
   dispatch({
-    type: 'SET_PAGE',
+    type: SET_PAGE,
     page: Number(page)
+  })
+}
+
+export const setSortby = (sortby) => dispatch => {
+  dispatch({
+    type: SET_SORTBY,
+    sortby
   })
 }
